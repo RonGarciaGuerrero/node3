@@ -1,7 +1,14 @@
 const express = require('express')
+const bodyParser=require('body-parser') //sirve para trabajar con la informacion que viaja de una pagina a otra en formato json
 const app = express()
+//parse application/ x-www-form-url
+app.use(bodyParser.urlencoded({extended:false}))
+//parse application/json
+app.use(bodyParser.json())
+
 require('dotenv').config()
 const port = process.env.PORT || 3000 //hacemos uso de las variables de entorno
+
 
 
 
