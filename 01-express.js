@@ -1,24 +1,46 @@
 const express = require('express')
 const app = express()
+require('dotenv').config()
 const port = process.env.PORT || 3000 //hacemos uso de las variables de entorno
+
+
 
 // Motor de plantillas
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 
-
 // Cambiar la raiz de los ficheros estáticos.
 
 app.use(express.static(__dirname + "/public"));
 
+//LLamada a las rutas
+app.use('/',require('./router/rutas')); //la pagina por defecto 
+
+app.use('/pokemon',require('./router/pokemon')); //
+
+
+//Conexión a base de datos
+const mongoose = require('mongoose');
+//Variables que tendremos siempre:
+//Lo correcto será declararlas EN VARIABLES DE ENTORNO
+//para que nadie vea directamente nuestras credenciales
+const user = 'ron2';
+const password = 'ron2';
+const dbname = 'pokemon';
+const uri = `mongodb+srv://${user}:${password}@cluster0.qchrc.mongodb.net/${dbname}?retryWrites=true&w=majority`; //URL de conexión, que completaremos luego
+mongoose.connect(uri,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+)
+  .then(() => console.log('Base de datos conectada'))
+  .catch(e => console.log(e))
+
 // Tampoco va a entrar nunca porqure el directorio de ahor aes /public no es /
-app.get('/', (req, res) => {
-
-    console.log(__dirname);
-
-    res.render("index", {titulo : "mi jeje titulo dinámico"});
-
-})
+//por peticion de cliente GET 
+//usamos funcion flecha para evtar funcoines innecesaria, obligatorio req y res, '/' es el directorio en que va a buscar localhost
+// app.get('/', (req, res) => {
+//     console.log(__dirname);
+//     res.render("index", {titulo : "mi jeje titulo dinámico"});
+// }) en las transparencias Dani dice que las corte y las peque en el rutas cambiando app por router
 
 // ES importante mantener la estructura de carpeta, si entro en una no puedo salir y no funcionara
 app.get('/contacto', (req, res) => {
